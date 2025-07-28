@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy Birthday Monika ❤️</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #ff9a9e, #fad0c4);
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      overflow-x: hidden;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      transition: background-image 0.8s ease-in-out;
+    }
+    .photo-background {
+      position: fixed;
+      top: 0; left: 0; bottom: 0; right: 0;
+      z-index: 0;
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.6);
+      opacity: 0;
+      transition: opacity 1s, transform 10s ease-in-out;
+      pointer-events: none;
+    }
+    .photo-background.visible {
+      opacity: 1;
+      animation: zoomInOut 10s ease-in-out infinite alternate;
+    }
+    @keyframes zoomInOut {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.05); }
+    }
+    .container {
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255, 105, 135, 0.3);
+      z-index: 2;
+      position: relative;
+    }
+    h1 {
+      font-size: 2em; 
+      color: #fff0f5; 
+      margin-bottom: 10px;
+    }
+    h2 {
+      color: #ffe4e1; 
+      margin-top: 0; 
+      font-weight: normal;
+    }
+    .heart {
+      font-size: 2.5em;
+      animation: pulse 1.2s infinite; 
+      user-select: none;
+      margin-bottom: 18px;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    .message {
+      font-size: 1.1em;
+      padding: 10px 0;
+      color: #000000;
+      user-select: none;
+      min-height: 130px;
+      margin-bottom: 10px;
+      transition: opacity 0.5s;
+    }
+    .promises-area {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 12px;
+      margin-top: 10px;
+      min-height: 140px;
+    }
+    .promise-card {
+      width: 90%;
+      background: rgba(255, 255, 255, 0.23);
+      border: 1.7px solid #ff6f91;
+      padding: 14px;
+      border-radius: 12px;
+      color: #ffffff;
+      font-size: 1.1em;
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 10px rgba(255, 119, 135, 0.16);
+      margin: 0 auto;
+      opacity: 0;
+      transform: scale(0.85);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      user-select: none;
+    }
+    .promise-card.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .buttons {
+      margin-top: 16px;
+      user-select: none;
+    }
+    .buttons button {
+      background-color: #ff6f91;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      margin: 10px 8px;
+      font-size: 1em;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      user-select: none;
+    }
+    .buttons button:hover {
+      background-color: #ff3b6a;
+    }
+    .falling {
+      position: fixed;
+      top: -40px;
+      font-size: 28px;
+      z-index: 2;
+      pointer-events: none;
+      animation: fall linear infinite;
+      user-select: none;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    footer {
+      margin-top: 20px;
+      font-size: 0.9em;
+      color: #fff5f5;
+      position: relative;
+      z-index: 2;
+      user-select: none;
+    }
+    /* Password Modal */
+    .password-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.72);
+      z-index: 99;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      animation: fadein .4s;
+      user-select: none;
+    }
+    @keyframes fadein { from {opacity: 0;} to {opacity: 1;} }
+    .password-box {
+      position: relative;
+      background: #fff;
+      padding: 32px 26px 20px 26px;
+      border-radius: 14px;
+      box-shadow: 0 0 24px #ff6f9160;
+      color: #c55;
+      min-width: 270px;
+      text-align: center;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .password-box input {
+      padding: 11px 13px;
+      font-size: 1.1em;
+      border-radius: 6px;
+      border: 1.2px solid #ff6f91;
+      width: 85%;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    .password-box button {
+      background: #ff6f91;
+      color: #fff;
+      border: none;
+      padding: 9px 19px;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .password-box button:hover {
+      background: #ff3b6a;
+    }
+    .password-error {
+      color: red;
+      font-size: 0.98em;
+      margin-bottom:8px;
+      min-height: 18px;
+      display: block;
+    }
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #c55;
+      cursor: pointer;
+    }
+    .close-btn:hover {
+      color: #ff3b6a;
+    }
+    /* Mini quiz/game */
+    .mini-game {
+      margin: 25px 0 10px 0;
+      background: rgba(255,255,255,0.27);
+      border-radius: 16px;
+      box-shadow: 0 2px 8px #ffd3dc65;
+      padding: 18px 12px;
+      color: #ffffff;
+      font-size: 1.04em;
+      max-width: 95%;
+    }
+    .quiz-option-btn {
+      display: block;
+      margin: 13px auto;
+      background: #fff;
+      color: #ff6f91;
+      border: 1.6px solid #ff6f91;
+      border-radius: 20px;
+      padding: 11px 26px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.18s;
+      font-weight: bold;
+      width: 80%;
+      max-width: 240px;
+    }
+    .quiz-option-btn.selected {
+      background: #ff6f91;
+      color: #fff;
+      border-color: #ff3b6a;
+    }
+    .quiz-result {
+      margin: 15px 0 6px 0;
+      color: #c55;
+      font-weight: 600;
+      font-size: 1.09em;
+    }
+  </style>
+</head>
+<body>
+  <div class="photo-background" id="photoBG"></div>
+
+  <div class="container" id="gameContainer">
+    <div class="heart">❤️</div>
+    <h1>Happy Birthday Monika!</h1>
+    <h2>To the love of my life 💕</h2>
+
+    <div class="message" id="gameMessage">
+      On your special day, I just want to remind you how much you mean to me.<br/>
+      You fill my world with joy and so much love.<br/>
+      Thank you for being the most beautiful part of my life.<br/><br/>
+      May this year bring you endless happiness and magical moments.<br/>
+      I’ll always be here to celebrate every moment with you.<br/><br/>
+      💖 With all my love,<br/>
+      — Your forever admirer ❤️
+    </div>
+
+    <div class="promises-area" id="promisesArea"></div>
+
+    <div class="buttons" id="initialOptions">
+      <button id="loveBtn">I Love You ❤️</button>
+      <button id="hateBtn">I Hate You 😜</button>
+    </div>
+
+    <div class="buttons" id="playGameButtonContainer" style="display:none;">
+      <button id="playGameBtn">Play Game 🎮</button>
+    </div>
+
+    <footer>Made with 💘 just for you</footer>
+  </div>
+
+  <div style="display:none;" id="passModal"></div>
+
+<script>
+  const loveBtn = document.getElementById('loveBtn');
+  const hateBtn = document.getElementById('hateBtn');
+  const playGameBtn = document.getElementById('playGameBtn');
+  const playGameButtonContainer = document.getElementById('playGameButtonContainer');
+  const initialOptions = document.getElementById('initialOptions');
+  const gameMessage = document.getElementById('gameMessage');
+  const photoBG = document.getElementById('photoBG');
+  const promisesArea = document.getElementById('promisesArea');
+  const passModal = document.getElementById('passModal');
+
+  const miniQuizLove = {
+    question: "Guess what makes me smile the most?",
+    options: [
+      "Road trip with you",
+      "Getting a surprise gift from you",
+      "Your beautiful smile and laugh",
+      "Chill out with friends",
+    ],
+    correct: 1,
+    correctText: "Yes! Your smile and laugh are my favorite things in the world. You light up my heart every time!",
+    wrongText: "That's sweet, but my real happiness always comes from YOU."
+  };
+
+  const miniQuizHate = {
+    question: "Can you guess what I'd do just to make you forgive me?",
+    options: [
+      "Cook your favorite food",
+      "Give you unlimited hugs",
+      "Giveing time",
+      "All of the above"
+    ],
+    correct: 3,
+    correctText: "Right! I'd do anything (and everything) it takes to bring back your smile. 💖",
+    wrongText: "I'm ready for any challenge if it means a chance to make you happy!"
+  };
+
+  const lovePromises = [
+    "Thank you for loving me as I am.",
+    "I promise, even on my busiest days, you are always on my mind.",
+    "I vow to find little ways to show you I care, no matter how hectic life gets.",
+    "I'll keep learning how to love you better, every single day.",
+    "Let’s make more memories together, hand in hand.",
+    "You are my happiness, my peace in this busy world. Thank you for being patient, understanding, and always loving the real me."
+  ];
+
+  const hateIntro = "Hmm… Even if you say you hate me, I’ll just have to work even harder to make you love me anyway!";
+  const hatePromises = [
+    "I'll set reminders to check in on you during busy days.",
+    "When I'm swamped with work, I'll send you quick notes just to say I'm thinking of you.",
+    "I'll plan special dates when I'm less busy, to make up for lost time.",
+    "I'll ask you about your day and listen, making you feel seen and appreciated.",
+    "No matter how busy I am, I'll never forget to care.",
+    "Please give me a chance to be better every day."
+  ];
+
+  const lovePhotoUrl = "WhatsApp Image 2025-07-24 at 2.10.30 PM.jpeg";
+  const hatePhotoUrl = "WhatsApp Image 2025-07-24 at 2.10.31 PM.jpeg";
+
+  let falling = false;
+  let currentChoice = null; // "love" or "hate"
+
+  function makeFallingEmoji() {
+    const emojis = ["💖", "😘", "❤️", "🥰"];
+    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+    const el = document.createElement("div");
+    el.classList.add("falling");
+    el.innerText = emoji;
+    el.style.left = Math.random() * 100 + "vw";
+    el.style.animationDuration = (2 + Math.random() * 2.8) + "s";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 5000);
+  }
+
+  function startContinuousFalling() {
+    if (!falling) {
+      falling = true;
+      function loop() {
+        if (falling) {
+          makeFallingEmoji();
+          setTimeout(loop, 220);
+        }
+      }
+      loop();
+    }
+  }
+  function stopContinuousFalling() {
+    falling = false;
+  }
+  function heartBurstAnimation() {
+    const burstCount = 30;
+    for(let i = 0; i < burstCount; i++) {
+      setTimeout(() => {
+        const burstHeart = document.createElement('div');
+        burstHeart.classList.add('falling');
+        burstHeart.innerText = '💘';
+        burstHeart.style.fontSize = (20 + Math.random() * 20) + 'px';
+        burstHeart.style.left = (50 + (Math.random()-0.5)*30) + 'vw';
+        burstHeart.style.top = '50vh';
+        burstHeart.style.animationDuration = (2 + Math.random()*2) + 's';
+        burstHeart.style.zIndex = 5;
+        document.body.appendChild(burstHeart);
+        burstHeart.animate([
+          { transform: 'translateY(0) scale(1)', opacity: 1 },
+          { transform: `translateY(-${100 + Math.random()*50}px) scale(0.7)`, opacity: 0 }
+        ], {
+          duration: 2000,
+          easing: 'ease-out'
+        });
+        setTimeout(() => burstHeart.remove(), 2000);
+      }, i * 70);
+    }
+  }
+
+  function showPromisesSequentially(promises, callback, addIntro) {
+    promisesArea.innerHTML = '';
+    let promiseIndex = 0;
+    function showCard(text) {
+      const card = document.createElement('div');
+      card.className = 'promise-card';
+      card.textContent = text;
+      promisesArea.appendChild(card);
+      setTimeout(() => card.classList.add('visible'), 50);
+      card.animate([
+        { transform: 'scale(1)' },
+        { transform: 'scale(1.04)' },
+        { transform: 'scale(1)' }
+      ], {
+        duration: 1400,
+        iterations: 2
+      });
+    }
+    function showNext() {
+      if (promiseIndex === 0 && addIntro) {
+        showCard(addIntro);
+        promiseIndex++;
+        setTimeout(showNext, 2500);
+        return;
+      }
+      if (promiseIndex >= promises.length + (addIntro ? 1 : 0)) {
+        if (callback) callback();
+        return;
+      }
+      const idx = addIntro ? promiseIndex - 1 : promiseIndex;
+      showCard(promises[idx]);
+      promiseIndex++;
+      setTimeout(showNext, 2500);
+    }
+    showNext();
+  }
+
+  function runQuizGame({ question, options, correct, correctText, wrongText }) {
+    promisesArea.innerHTML = '';
+    const wrapper = document.createElement('div');
+    wrapper.className = 'mini-game';
+    const qElem = document.createElement('div');
+    qElem.textContent = question;
+    qElem.style.marginBottom = '18px';
+    wrapper.appendChild(qElem);
+
+    let chosen = -1;
+    const resultElem = document.createElement('div');
+    resultElem.className = 'quiz-result';
+
+    options.forEach((opt, idx) => {
+      const b = document.createElement('button');
+      b.className = 'quiz-option-btn';
+      b.textContent = opt;
+      b.onclick = function() {
+        if (chosen !== -1) return;
+        chosen = idx;
+        b.classList.add('selected');
+        if (idx === correct) {
+          resultElem.textContent = correctText;
+          resultElem.style.color = '#20a446';
+          setTimeout(() => {
+            resultElem.textContent = '';
+            heartBurstAnimation();
+          }, 2200);
+        } else {
+          resultElem.textContent = wrongText;
+          resultElem.style.color = '#c55';
+        }
+      };
+      wrapper.appendChild(b);
+    });
+    wrapper.appendChild(resultElem);
+    promisesArea.appendChild(wrapper);
+  }
+
+  // Password modal for hate path
+  function showPasswordModal(onSuccess) {
+    passModal.innerHTML = `
+      <div class="password-modal" id="realModal">
+        <div class="password-box">
+          <span class="close-btn" id="passCloseBtn" title="Close">&times;</span>
+          <div style="font-weight:700;color:#e26586;font-size:1.1em;margin-bottom:10px;">Enter password to open my real feelings</div>
+          <span class="password-error" id="passErrBox"></span>
+          <input type="password" id="passField" maxlength="24" placeholder="Password"/>
+          <br/>
+          <button id="passOkBtn">Open</button>
+        </div>
+      </div>`;
+    passModal.style.display = "block";
+    document.getElementById('passField').focus();
+    document.getElementById('passOkBtn').onclick = () => {
+      const val = document.getElementById('passField').value.trim();
+      if(val === "iloveavee") {
+        passModal.innerHTML = "";
+        passModal.style.display = "none";
+        onSuccess();
+      } else {
+        document.getElementById('passErrBox').textContent = "Wrong password…";
+        document.getElementById('passField').value = "";
+        document.getElementById('passField').focus();
+      }
+    };
+    document.getElementById('passField').addEventListener('keypress', e => {
+      if (e.key === 'Enter') document.getElementById('passOkBtn').click();
+    });
+    document.getElementById('passCloseBtn').onclick = () => {
+      passModal.innerHTML = "";
+      passModal.style.display = "none";
+    };
+  }
+
+  // On clicking I Love You - show promises + Play Game button
+  loveBtn.addEventListener('click', () => {
+    currentChoice = 'love';
+    startContinuousFalling();   // START falling hearts immediately
+    promisesArea.innerHTML = '';
+    playGameButtonContainer.style.display = 'block';
+    initialOptions.style.display = 'none';
+
+    photoBG.style.backgroundImage = `url('${lovePhotoUrl}')`;
+    photoBG.classList.add('visible');
+
+    gameMessage.innerHTML = 'Here are my promises for you: ';
+    showPromisesSequentially(lovePromises, () => {}, null);
+  });
+
+  // On clicking I Hate You - prompt password first, then show messages + Play Game button
+  hateBtn.addEventListener('click', () => {
+    showPasswordModal(function() {
+      currentChoice = 'hate';
+      startContinuousFalling();   // START falling hearts after password su.messageccess
+      promisesArea.innerHTML = '';
+      playGameButtonContainer.style.display = 'block';
+      initialOptions.style.display = 'none';
+
+      photoBG.style.backgroundImage = `url('${hatePhotoUrl}')`;
+      photoBG.classList.add('visible');
+
+      gameMessage.innerHTML = 'Hmm... Even if you say you hate me, I’ll just have to work even harder to make you love me anyway!';
+      showPromisesSequentially(hatePromises, () => {}, null);
+    });
+  });
+
+  // On clicking Play Game - open the corresponding quiz game and do animations
+  playGameBtn.addEventListener('click', () => {
+    playGameButtonContainer.style.display = 'none';
+    promisesArea.innerHTML = '';
+    if (currentChoice === 'love') {
+      // Falling hearts continue for love path (if you want to stop after Play Game, uncomment below)
+      // stopContinuousFalling();
+      gameMessage.innerHTML = '';
+      runQuizGame(miniQuizLove);
+    } else if (currentChoice === 'hate') {
+      stopContinuousFalling(); // no continuous hearts for hate path
+      gameMessage.innerHTML = '';
+      runQuizGame(miniQuizHate);
+    }
+  });
+</script>
+</body>
+</html>
