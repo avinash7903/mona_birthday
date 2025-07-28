@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Happy Birthday Monika ❤️</title>
   <style>
+    /* (Your original CSS unchanged) */
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
@@ -48,18 +49,18 @@
       position: relative;
     }
     h1 {
-      font-size: 2em; 
-      color: #fff0f5; 
+      font-size: 2em;
+      color: #fff0f5;
       margin-bottom: 10px;
     }
     h2 {
-      color: #ffe4e1; 
-      margin-top: 0; 
+      color: #ffe4e1;
+      margin-top: 0;
       font-weight: normal;
     }
     .heart {
       font-size: 2.5em;
-      animation: pulse 1.2s infinite; 
+      animation: pulse 1.2s infinite;
       user-select: none;
       margin-bottom: 18px;
     }
@@ -253,6 +254,8 @@
 <body>
   <div class="photo-background" id="photoBG"></div>
 
+  <audio id="loveSong" src="Ijazat Lyrics - Nehaal Naseem  Falak sabir  Lyrics spot.mp3" preload="auto"></audio>
+
   <div class="container" id="gameContainer">
     <div class="heart">❤️</div>
     <h1>Happy Birthday Monika!</h1>
@@ -294,6 +297,8 @@
   const photoBG = document.getElementById('photoBG');
   const promisesArea = document.getElementById('promisesArea');
   const passModal = document.getElementById('passModal');
+  const loveSong = document.getElementById('loveSong'); // 🎵 audio element
+
 
   const miniQuizLove = {
     question: "Guess what makes me smile the most?",
@@ -303,10 +308,11 @@
       "Your beautiful smile and laugh",
       "Chill out with friends",
     ],
-    correct: 1,
+    correct: 2, // Fixed index to correct option
     correctText: "Yes! Your smile and laugh are my favorite things in the world. You light up my heart every time!",
     wrongText: "That's sweet, but my real happiness always comes from YOU."
   };
+
 
   const miniQuizHate = {
     question: "Can you guess what I'd do just to make you forgive me?",
@@ -321,6 +327,7 @@
     wrongText: "I'm ready for any challenge if it means a chance to make you happy!"
   };
 
+
   const lovePromises = [
     "Thank you for loving me as I am.",
     "I promise, even on my busiest days, you are always on my mind.",
@@ -329,6 +336,7 @@
     "Let’s make more memories together, hand in hand.",
     "You are my happiness, my peace in this busy world. Thank you for being patient, understanding, and always loving the real me."
   ];
+
 
   const hateIntro = "Hmm… Even if you say you hate me, I’ll just have to work even harder to make you love me anyway!";
   const hatePromises = [
@@ -340,11 +348,14 @@
     "Please give me a chance to be better every day."
   ];
 
+
   const lovePhotoUrl = "WhatsApp Image 2025-07-24 at 2.10.30 PM.jpeg";
   const hatePhotoUrl = "WhatsApp Image 2025-07-24 at 2.10.31 PM.jpeg";
 
+
   let falling = false;
   let currentChoice = null; // "love" or "hate"
+
 
   function makeFallingEmoji() {
     const emojis = ["💖", "😘", "❤️", "🥰"];
@@ -357,6 +368,7 @@
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 5000);
   }
+
 
   function startContinuousFalling() {
     if (!falling) {
@@ -398,6 +410,7 @@
     }
   }
 
+
   function showPromisesSequentially(promises, callback, addIntro) {
     promisesArea.innerHTML = '';
     let promiseIndex = 0;
@@ -435,6 +448,7 @@
     showNext();
   }
 
+
   function runQuizGame({ question, options, correct, correctText, wrongText }) {
     promisesArea.innerHTML = '';
     const wrapper = document.createElement('div');
@@ -444,9 +458,11 @@
     qElem.style.marginBottom = '18px';
     wrapper.appendChild(qElem);
 
+
     let chosen = -1;
     const resultElem = document.createElement('div');
     resultElem.className = 'quiz-result';
+
 
     options.forEach((opt, idx) => {
       const b = document.createElement('button');
@@ -473,6 +489,7 @@
     wrapper.appendChild(resultElem);
     promisesArea.appendChild(wrapper);
   }
+
 
   // Password modal for hate path
   function showPasswordModal(onSuccess) {
@@ -510,6 +527,7 @@
     };
   }
 
+
   // On clicking I Love You - show promises + Play Game button
   loveBtn.addEventListener('click', () => {
     currentChoice = 'love';
@@ -523,13 +541,20 @@
 
     gameMessage.innerHTML = 'Here are my promises for you: ';
     showPromisesSequentially(lovePromises, () => {}, null);
+
+    loveSong.currentTime = 0;
+    loveSong.volume = 0.7;
+    loveSong.play().catch((e) => {
+      console.warn("Autoplay prevented:", e);
+    });
   });
+
 
   // On clicking I Hate You - prompt password first, then show messages + Play Game button
   hateBtn.addEventListener('click', () => {
     showPasswordModal(function() {
       currentChoice = 'hate';
-      startContinuousFalling();   // START falling hearts after password su.messageccess
+      startContinuousFalling();   // START falling hearts after password success
       promisesArea.innerHTML = '';
       playGameButtonContainer.style.display = 'block';
       initialOptions.style.display = 'none';
@@ -537,10 +562,11 @@
       photoBG.style.backgroundImage = `url('${hatePhotoUrl}')`;
       photoBG.classList.add('visible');
 
-      gameMessage.innerHTML = 'Hmm... Even if you say you hate me, I’ll just have to work even harder to make you love me anyway!';
+      gameMessage.innerHTML = hateIntro;
       showPromisesSequentially(hatePromises, () => {}, null);
     });
   });
+
 
   // On clicking Play Game - open the corresponding quiz game and do animations
   playGameBtn.addEventListener('click', () => {
