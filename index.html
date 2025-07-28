@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Happy Birthday Monika ❤️</title>
   <style>
-    /* (Your original CSS unchanged) */
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
@@ -122,6 +121,7 @@
       cursor: pointer;
       transition: background 0.3s ease;
       user-select: none;
+      position: relative;
     }
     .buttons button:hover {
       background-color: #ff3b6a;
@@ -249,12 +249,56 @@
       font-weight: 600;
       font-size: 1.09em;
     }
+    /* Music beat animation on msgBtn */
+    #msgBtn.playing::after {
+      content: "";
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #fff;
+      box-shadow: 0 0 6px #fff;
+      animation: beatPulse 0.6s infinite alternate;
+    }
+    @keyframes beatPulse {
+      0% {
+        transform: translateX(-50%) scale(1);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateX(-50%) scale(1.6);
+        opacity: 0;
+      }
+    }
+    /* Center blinking heart for msg by avinash */
+    #blinkingHeart {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #ff3b6a;
+      font-size: 6em;
+      user-select: none;
+      animation: blinkHeart 1s infinite alternate;
+      z-index: 20;
+      display: none;
+    }
+    @keyframes blinkHeart {
+      0% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
   </style>
 </head>
 <body>
   <div class="photo-background" id="photoBG"></div>
 
+  <!-- Original music -->
   <audio id="loveSong" src="Ijazat Lyrics - Nehaal Naseem  Falak sabir  Lyrics spot.mp3" preload="auto"></audio>
+  <!-- New music -->
+  <audio id="myPowerWork" src="my_power_work.mp3" preload="auto"></audio>
 
   <div class="container" id="gameContainer">
     <div class="heart">❤️</div>
@@ -276,20 +320,25 @@
     <div class="buttons" id="initialOptions">
       <button id="loveBtn">I Love You ❤️</button>
       <button id="hateBtn">I Hate You 😜</button>
+      <button id="msgBtn">msg by avinash 🎵</button>
     </div>
 
     <div class="buttons" id="playGameButtonContainer" style="display:none;">
       <button id="playGameBtn">Play Game 🎮</button>
     </div>
 
-    <footer>Made with 💘 just for you</footer>
+    <footer>Made with ❤️ By Avinash Only for you</footer>
   </div>
+
+  <!-- Blinking heart for msg music -->
+  <div id="blinkingHeart">❤️</div>
 
   <div style="display:none;" id="passModal"></div>
 
 <script>
   const loveBtn = document.getElementById('loveBtn');
   const hateBtn = document.getElementById('hateBtn');
+  const msgBtn = document.getElementById('msgBtn');
   const playGameBtn = document.getElementById('playGameBtn');
   const playGameButtonContainer = document.getElementById('playGameButtonContainer');
   const initialOptions = document.getElementById('initialOptions');
@@ -297,8 +346,9 @@
   const photoBG = document.getElementById('photoBG');
   const promisesArea = document.getElementById('promisesArea');
   const passModal = document.getElementById('passModal');
-  const loveSong = document.getElementById('loveSong'); // 🎵 audio element
-
+  const loveSong = document.getElementById('loveSong');
+  const myPowerWork = document.getElementById('myPowerWork');
+  const blinkingHeart = document.getElementById('blinkingHeart');
 
   const miniQuizLove = {
     question: "Guess what makes me smile the most?",
@@ -308,11 +358,10 @@
       "Your beautiful smile and laugh",
       "Chill out with friends",
     ],
-    correct: 2, // Fixed index to correct option
+    correct: 2,
     correctText: "Yes! Your smile and laugh are my favorite things in the world. You light up my heart every time!",
     wrongText: "That's sweet, but my real happiness always comes from YOU."
   };
-
 
   const miniQuizHate = {
     question: "Can you guess what I'd do just to make you forgive me?",
@@ -327,7 +376,6 @@
     wrongText: "I'm ready for any challenge if it means a chance to make you happy!"
   };
 
-
   const lovePromises = [
     "Thank you for loving me as I am.",
     "I promise, even on my busiest days, you are always on my mind.",
@@ -336,7 +384,6 @@
     "Let’s make more memories together, hand in hand.",
     "You are my happiness, my peace in this busy world. Thank you for being patient, understanding, and always loving the real me."
   ];
-
 
   const hateIntro = "Hmm… Even if you say you hate me, I’ll just have to work even harder to make you love me anyway!";
   const hatePromises = [
@@ -348,14 +395,12 @@
     "Please give me a chance to be better every day."
   ];
 
-
   const lovePhotoUrl = "WhatsApp Image 2025-07-24 at 2.10.30 PM.jpeg";
   const hatePhotoUrl = "WhatsApp Image 2025-07-24 at 2.10.31 PM.jpeg";
-
+  const msgPhotoUrl = "WhatsApp Image 2025-07-28 at 9.12.23 PM.jpeg";
 
   let falling = false;
-  let currentChoice = null; // "love" or "hate"
-
+  let currentChoice = null;
 
   function makeFallingEmoji() {
     const emojis = ["💖", "😘", "❤️", "🥰"];
@@ -368,7 +413,6 @@
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 5000);
   }
-
 
   function startContinuousFalling() {
     if (!falling) {
@@ -410,7 +454,6 @@
     }
   }
 
-
   function showPromisesSequentially(promises, callback, addIntro) {
     promisesArea.innerHTML = '';
     let promiseIndex = 0;
@@ -448,7 +491,6 @@
     showNext();
   }
 
-
   function runQuizGame({ question, options, correct, correctText, wrongText }) {
     promisesArea.innerHTML = '';
     const wrapper = document.createElement('div');
@@ -458,11 +500,9 @@
     qElem.style.marginBottom = '18px';
     wrapper.appendChild(qElem);
 
-
     let chosen = -1;
     const resultElem = document.createElement('div');
     resultElem.className = 'quiz-result';
-
 
     options.forEach((opt, idx) => {
       const b = document.createElement('button');
@@ -489,7 +529,6 @@
     wrapper.appendChild(resultElem);
     promisesArea.appendChild(wrapper);
   }
-
 
   // Password modal for hate path
   function showPasswordModal(onSuccess) {
@@ -527,20 +566,62 @@
     };
   }
 
+  // Helper to show all main buttons available
+  function showAllButtons() {
+    Array.from(initialOptions.children).forEach(btn => btn.style.display = 'inline-block');
+    initialOptions.style.display = 'flex';
+  }
 
-  // On clicking I Love You - show promises + Play Game button
+  // Reset to initial state
+  function resetPage() {
+    loveSong.pause();
+    loveSong.currentTime = 0;
+    myPowerWork.pause();
+    myPowerWork.currentTime = 0;
+    msgBtn.classList.remove('playing');
+    blinkingHeart.style.display = 'none';
+
+    photoBG.style.backgroundImage = '';
+    photoBG.classList.remove('visible');
+
+    promisesArea.innerHTML = '';
+    playGameButtonContainer.style.display = 'none';
+
+    gameMessage.innerHTML = `
+      On your special day, I just want to remind you how much you mean to me.<br/>
+      You fill my world with joy and so much love.<br/>
+      Thank you for being the most beautiful part of my life.<br/><br/>
+      May this year bring you endless happiness and magical moments.<br/>
+      I’ll always be here to celebrate every moment with you.<br/><br/>
+      💖 With all my love,<br/>
+      — Your forever admirer ❤️
+    `;
+
+    showAllButtons();
+
+    currentChoice = null;
+    stopContinuousFalling();
+  }
+
   loveBtn.addEventListener('click', () => {
     currentChoice = 'love';
-    startContinuousFalling();   // START falling hearts immediately
+
+    // Hide all buttons except container
+    initialOptions.style.display = 'none';
+
+    startContinuousFalling();
     promisesArea.innerHTML = '';
     playGameButtonContainer.style.display = 'block';
-    initialOptions.style.display = 'none';
 
     photoBG.style.backgroundImage = `url('${lovePhotoUrl}')`;
     photoBG.classList.add('visible');
 
     gameMessage.innerHTML = 'Here are my promises for you: ';
     showPromisesSequentially(lovePromises, () => {}, null);
+
+    myPowerWork.pause();
+    myPowerWork.currentTime = 0;
+    msgBtn.classList.remove('playing');
 
     loveSong.currentTime = 0;
     loveSong.volume = 0.7;
@@ -549,40 +630,89 @@
     });
   });
 
-
-  // On clicking I Hate You - prompt password first, then show messages + Play Game button
   hateBtn.addEventListener('click', () => {
+    initialOptions.style.display = 'none';
+
     showPasswordModal(function() {
       currentChoice = 'hate';
-      startContinuousFalling();   // START falling hearts after password success
+      startContinuousFalling();
       promisesArea.innerHTML = '';
       playGameButtonContainer.style.display = 'block';
-      initialOptions.style.display = 'none';
 
       photoBG.style.backgroundImage = `url('${hatePhotoUrl}')`;
       photoBG.classList.add('visible');
 
       gameMessage.innerHTML = hateIntro;
       showPromisesSequentially(hatePromises, () => {}, null);
+
+      myPowerWork.pause();
+      myPowerWork.currentTime = 0;
+      msgBtn.classList.remove('playing');
+
+      loveSong.currentTime = 0;
+      loveSong.volume = 0.7;
+      loveSong.play().catch((e) => {
+        console.warn("Autoplay prevented:", e);
+      });
     });
   });
 
-
-  // On clicking Play Game - open the corresponding quiz game and do animations
   playGameBtn.addEventListener('click', () => {
     playGameButtonContainer.style.display = 'none';
     promisesArea.innerHTML = '';
     if (currentChoice === 'love') {
-      // Falling hearts continue for love path (if you want to stop after Play Game, uncomment below)
-      // stopContinuousFalling();
       gameMessage.innerHTML = '';
       runQuizGame(miniQuizLove);
     } else if (currentChoice === 'hate') {
-      stopContinuousFalling(); // no continuous hearts for hate path
+      stopContinuousFalling();
       gameMessage.innerHTML = '';
       runQuizGame(miniQuizHate);
     }
   });
+
+  msgBtn.addEventListener('click', () => {
+    const isPlaying = !myPowerWork.paused;
+
+    if (!isPlaying) {
+      loveSong.pause();
+      loveSong.currentTime = 0;
+
+      photoBG.style.backgroundImage = `url('${msgPhotoUrl}')`;
+      photoBG.classList.add('visible');
+
+      // Hide all buttons except msgBtn
+      Array.from(initialOptions.children).forEach(btn => btn.style.display = 'none');
+      msgBtn.style.display = 'inline-block';
+
+      promisesArea.innerHTML = '';
+      gameMessage.innerHTML = 'Enjoy the beats with Avinash! 🎶';
+
+      myPowerWork.currentTime = 0;
+      myPowerWork.volume = 0.7;
+      myPowerWork.play().catch(e => {
+        console.warn('Autoplay prevented:', e);
+      });
+
+      msgBtn.classList.add('playing');
+      blinkingHeart.style.display = 'block';
+
+      stopContinuousFalling();
+    } else {
+      myPowerWork.pause();
+      msgBtn.classList.remove('playing');
+      blinkingHeart.style.display = 'none';
+    }
+  });
+
+  myPowerWork.addEventListener('ended', () => {
+    msgBtn.classList.remove('playing');
+    blinkingHeart.style.display = 'none';
+  });
+  myPowerWork.addEventListener('pause', () => {
+    msgBtn.classList.remove('playing');
+    blinkingHeart.style.display = 'none';
+  });
+
 </script>
 </body>
 </html>
